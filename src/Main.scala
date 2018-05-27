@@ -1,3 +1,3 @@
 object Main extends App{
-  println("test2")
+  println("test3")
 }
