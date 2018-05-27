@@ -2,4 +2,4 @@ package data
 
 import scala.util.Try
 
-case class Parser(s: String => Try[String])
+case class Parser(c: Char, s: String => Try[String])

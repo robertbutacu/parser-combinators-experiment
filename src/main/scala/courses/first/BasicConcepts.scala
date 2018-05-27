@@ -47,7 +47,10 @@ object BasicConcepts {
     }
   }
 
-  def parseChar(c: Char)(s: String): Try[String] = {
+  def wrapWithParser(c: Char)(func: String => Try[String]): Parser =
+    Parser(c, func)
+
+  def parseChar(c: Char)(s: String): Parser = {
     def innerFunction(s: String): Try[String] = {
       if (s.isEmpty)
         Success("Parsed the whole string")
@@ -59,6 +62,8 @@ object BasicConcepts {
       }
     }
 
-    Parser(innerFunction)(s)
+    Parser(c, innerFunction)
   }
+
+  def run(p: Parser)(input: String) = p.s(input)
 }

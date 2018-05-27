@@ -1,5 +1,6 @@
 package courses.first
 
+import data.Parser
 import org.scalatest.FlatSpec
 
 import scala.util.{Failure, Success, Try}
@@ -9,6 +10,8 @@ class BasicConceptsTests extends FlatSpec {
   lazy val badString = "ZBC"
   lazy val customLetter = 'A'
   lazy val aParser: String => Try[String] = BasicConcepts.parseChar2('A')
+  lazy val dataStructureParser: Parser = BasicConcepts.parseChar('A')(goodString)
+  lazy val parserExecutor: String => Try[String] = BasicConcepts.run(dataStructureParser)
 
   def injectCharIntoPositiveMessage(c: Char): String =
     s"""Found $c"""
@@ -51,9 +54,24 @@ class BasicConceptsTests extends FlatSpec {
     })
   }
 
-  "Give a string not starting with A " should "parse it " in {
+  "Give a string not starting with A " should "parse it using the Parser data structure" in {
     assert(aParser(badString) match {
+      case Success(_) => false
+      case Failure(_) => true
+    })
+  }
+
+
+  "Give a string starting with A " should "parse it using the Parser data structure" in {
+    assert(parserExecutor(goodString) match {
       case Success(_) => true
+      case _ => false
+    })
+  }
+
+  "Give a string not starting with A " should "parse it " in {
+    assert(parserExecutor(badString) match {
+      case Success(_) => false
       case Failure(_) => true
     })
   }
