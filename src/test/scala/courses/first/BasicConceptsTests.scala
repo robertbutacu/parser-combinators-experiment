@@ -2,6 +2,8 @@ package courses.first
 
 import org.scalatest.FlatSpec
 
+import scala.util.{Failure, Success}
+
 class BasicConceptsTests extends FlatSpec {
   lazy val goodString = "ABC"
   lazy val badString = "ZBC"
@@ -27,5 +29,17 @@ class BasicConceptsTests extends FlatSpec {
 
   "Given a string not starting with a custom letter" should "not parse the string" in {
     assert(BasicConcepts.parseCharUncurried(badString, customLetter) === (injectCharIntoNegativeMessage('A', 'Z'), badString))
+  }
+
+  "Given a string starting with a custom letter on the try function " should "parse the string" in {
+    assert(BasicConcepts.parseCharUncurriedTry(goodString, customLetter) === Success(goodString.tail))
+  }
+
+  "Given a string not starting with a custom letter on the try function " should "not parse the string" in {
+    assert(BasicConcepts
+      .parseCharUncurriedTry(badString, customLetter) match {
+      case Failure(_) => true
+      case _ => false
+    })
   }
 }
