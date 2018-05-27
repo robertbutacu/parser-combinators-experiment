@@ -2,12 +2,13 @@ package courses.first
 
 import org.scalatest.FlatSpec
 
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 class BasicConceptsTests extends FlatSpec {
   lazy val goodString = "ABC"
   lazy val badString = "ZBC"
   lazy val customLetter = 'A'
+  lazy val aParser: String => Try[String] = BasicConcepts.parseChar('A')
 
   def injectCharIntoPositiveMessage(c: Char): String =
     s"""Found $c"""
@@ -40,6 +41,20 @@ class BasicConceptsTests extends FlatSpec {
       .parseCharUncurriedTry(badString, customLetter) match {
       case Failure(_) => true
       case _ => false
+    })
+  }
+
+  "Give a string starting with A " should "parse it " in {
+    assert(aParser(goodString) match {
+      case Success(_) => true
+      case _ => false
+    })
+  }
+
+  "Give a string not starting with A " should "parse it " in {
+    assert(aParser(badString) match {
+      case Success(_) => true
+      case Failure(_) => true
     })
   }
 }

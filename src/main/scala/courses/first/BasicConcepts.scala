@@ -33,4 +33,15 @@ object BasicConcepts {
       }
     }
   }
+
+  def parseChar(c: Char)(s: String): Try[String] = {
+    if (s.isEmpty)
+      Success("Parsed the whole string")
+    else {
+      s.head.toLower match {
+        case found if found == c.toLower => Success(s.tail)
+        case _ => Failure(new IllegalArgumentException(s"""Expected $c, found ${s.head}"""))
+      }
+    }
+  }
 }
