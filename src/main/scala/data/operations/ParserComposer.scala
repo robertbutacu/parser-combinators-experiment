@@ -11,18 +11,19 @@ trait ParserComposer {
   def orElse(p: Parser): Parser
   def choice: Try[String]
   def anyOf: Try[String]
+  def run(input: String): Try[String]
 }
 
 object ParserComposer {
   implicit class ImplicitParserComposer(parser: Parser) extends ParserComposer {
     override def andThen(p: Parser): Parser = {
       def innerFnc(input: String): Try[String] = {
-        val result1 = BasicConcepts.run(parser)(input)
+        val result1 = parser.run(input)
 
         result1 match {
           case Failure(ex) => Failure(ex)
           case Success(tail) =>
-            BasicConcepts.run(p)(tail)
+            p.run(tail)
         }
       }
 
@@ -33,10 +34,10 @@ object ParserComposer {
 
     override def orElse(p: Parser): Parser = {
       def innerFnc(input: String): Try[String] = {
-        val result1 = BasicConcepts.run(parser)(input)
+        val result1 = parser.run(input)
 
         result1 match {
-          case Failure(_) => BasicConcepts.run(p)(input)
+          case Failure(_) => p.run(input)
           case Success(tail) => Success(tail)
         }
       }
@@ -47,5 +48,7 @@ object ParserComposer {
     override def choice: Try[String] = ???
 
     override def anyOf: Try[String] = ???
+
+    override def run(input: String): Try[String] = parser.s(input)
   }
 }

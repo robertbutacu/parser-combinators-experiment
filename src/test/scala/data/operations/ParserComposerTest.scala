@@ -21,35 +21,29 @@ class ParserComposerTest extends FlatSpec {
   lazy val aAndBParser: Parser = AParser >> BParser
   lazy val aOrElseBParser: Parser = AParser orElse BParser
 
-
-  lazy val parser: String => Try[String] = BasicConcepts.run(aAndBParser)(_)
-  lazy val orElseParser: String => Try[String] = BasicConcepts.run(aOrElseBParser)(_)
-
-
-
   "Given a good string" should "parse 2 letter with andThen" in {
-    assert(parser(goodString) match {
+    assert(aAndBParser.run(goodString) match {
       case Success(_) => true
       case _ => false
     })
   }
 
   "Given a bad first letter string" should "not parse andThen" in {
-    assert(parser(badString) match {
+    assert(aAndBParser.run(badString) match {
       case Failure(_) => true
       case _ => false
     })
   }
 
   "Given a bad second letter string" should "not parse andThen" in {
-    assert(parser(badString2) match {
+    assert(aAndBParser.run(badString2) match {
       case Failure(_) => true
       case _ => false
     })
   }
 
   "Given a string that can be parse initially" should "use the first parser" in {
-    assert(orElseParser(goodString) match {
+    assert(aOrElseBParser.run(goodString) match {
       case Success(_) => true
       case _ => false
     })
@@ -57,14 +51,14 @@ class ParserComposerTest extends FlatSpec {
 
 
   "Given a string that can be parse using the secondary function" should "use the second parser" in {
-    assert(orElseParser(goodSecondLetterString) match {
+    assert(aOrElseBParser.run(goodSecondLetterString) match {
       case Success(_) => true
       case _ => false
     })
   }
 
   "Given a string that cant be parser " should "throw exception " in {
-    assert(orElseParser(badString) match {
+    assert(aOrElseBParser.run(badString) match {
       case Success(_) => false
       case Failure(_) => true
     })
