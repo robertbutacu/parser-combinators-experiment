@@ -1,6 +1,6 @@
 package courses.first
 
-import data.Parser
+import data.{Parser, Result}
 import org.scalatest.FlatSpec
 
 import scala.util.{Failure, Success, Try}
@@ -11,7 +11,7 @@ class BasicConceptsTests extends FlatSpec {
   lazy val customLetter = 'A'
   lazy val aParser: String => Try[String] = BasicConcepts.parseChar2('A')
   lazy val dataStructureParser: Parser = BasicConcepts.buildParser('A')
-  lazy val parserExecutor: String => Try[String] = BasicConcepts.run(dataStructureParser)
+  lazy val parserExecutor: String => Try[Result] = BasicConcepts.run(dataStructureParser)
 
   def injectCharIntoPositiveMessage(c: Char): String =
     s"""Found $c"""

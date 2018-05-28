@@ -1,6 +1,6 @@
 package courses.first
 
-import data.Parser
+import data.{Parser, Result}
 
 import scala.util.{Failure, Success, Try}
 
@@ -47,16 +47,16 @@ object BasicConcepts {
     }
   }
 
-  def wrapWithParser(c: Char)(func: String => Try[String]): Parser =
+  def wrapWithParser(c: Char)(func: String => Try[Result]): Parser =
     Parser(c, func)
 
   def buildParser(c: Char): Parser = {
-    def innerFunction(s: String): Try[String] = {
+    def innerFunction(s: String): Try[Result] = {
       if (s.isEmpty)
-        Success("Parsed the whole string")
+        Success(Result("".toCharArray.head, "Parsed it all"))
       else {
         s.head.toLower match {
-          case found if found == c.toLower => Success(s.tail)
+          case found if found == c.toLower => Success(Result(s.head, s.tail))
           case _ => Failure(new IllegalArgumentException(s"""Expected $c, found ${s.head}"""))
         }
       }

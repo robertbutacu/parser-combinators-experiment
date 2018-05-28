@@ -1,7 +1,7 @@
 package data.operations
 
 import courses.first.BasicConcepts
-import data.Parser
+import data.{Parser, Result}
 
 import scala.util.{Failure, Success, Try}
 
@@ -9,22 +9,22 @@ trait ParserComposer {
   def andThen(p: Parser): Parser
   def >>(p: Parser): Parser
   def orElse(p: Parser): Parser
-  def choice: Try[String]
-  def anyOf: Try[String]
-  def run(input: String): Try[String]
+  def choice: Try[Result]
+  def anyOf: Try[Result]
+  def run(input: String): Try[Result]
   def <|>(p: Parser): Parser
 }
 
 object ParserComposer {
   implicit class ImplicitParserComposer(parser: Parser) extends ParserComposer {
     override def andThen(p: Parser): Parser = {
-      def innerFnc(input: String): Try[String] = {
+      def innerFnc(input: String): Try[Result] = {
         val result1 = parser.run(input)
 
         result1 match {
           case Failure(ex) => Failure(ex)
           case Success(tail) =>
-            p.run(tail)
+            p.run(tail.remaining)
         }
       }
 
@@ -34,7 +34,7 @@ object ParserComposer {
     override def >>(p: Parser): Parser = this.andThen(p)
 
     override def orElse(p: Parser): Parser = {
-      def innerFnc(input: String): Try[String] = {
+      def innerFnc(input: String): Try[Result] = {
         val result1 = parser.run(input)
 
         result1 match {
@@ -46,11 +46,11 @@ object ParserComposer {
       Parser(p.c, innerFnc)
     }
 
-    override def choice: Try[String] = ???
+    override def choice: Try[Result] = ???
 
-    override def anyOf: Try[String] = ???
+    override def anyOf: Try[Result] = ???
 
-    override def run(input: String): Try[String] = parser.s(input)
+    override def run(input: String): Try[Result] = parser.s(input)
 
     override def <|>(p: Parser): Parser = this.orElse(p)
   }
