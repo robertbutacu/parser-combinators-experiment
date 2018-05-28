@@ -15,8 +15,8 @@ class ParserComposerTest extends FlatSpec {
   lazy val customLetter = 'A'
 
 
-  lazy val AParser: Parser = BasicConcepts.parseChar('A')
-  lazy val BParser: Parser = BasicConcepts.parseChar('B')
+  lazy val AParser: Parser = BasicConcepts.buildParser('A')
+  lazy val BParser: Parser = BasicConcepts.buildParser('B')
 
   lazy val aAndBParser: Parser = AParser >> BParser
   lazy val aOrElseBParser: Parser = AParser orElse BParser

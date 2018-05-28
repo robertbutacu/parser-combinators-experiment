@@ -50,7 +50,7 @@ object BasicConcepts {
   def wrapWithParser(c: Char)(func: String => Try[String]): Parser =
     Parser(c, func)
 
-  def parseChar(c: Char): Parser = {
+  def buildParser(c: Char): Parser = {
     def innerFunction(s: String): Try[String] = {
       if (s.isEmpty)
         Success("Parsed the whole string")
