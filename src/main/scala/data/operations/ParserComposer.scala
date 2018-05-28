@@ -1,12 +1,13 @@
 package data.operations
 
+import courses.first.BasicConcepts
 import data.Parser
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 trait ParserComposer {
-  def andThen(p: Parser): Try[String]
-  def >>(p: Parser): Try[String]
+  def andThen(p: Parser): Parser
+  def >>(p: Parser): Parser
   def orElse(p: Parser): Try[String]
   def choice: Try[String]
   def anyOf: Try[String]
@@ -14,9 +15,21 @@ trait ParserComposer {
 
 object ParserComposer {
   implicit class ImplicitParserComposer(parser: Parser) extends ParserComposer {
-    override def andThen(p: Parser): Try[String] = ???
+    override def andThen(p: Parser): Parser = {
+      def innerFnc(input: String): Try[String] = {
+        val result1 = BasicConcepts.run(parser)(input)
 
-    override def >>(p: Parser): Try[String] = this.>>(p)
+        result1 match {
+          case Failure(ex) => Failure(ex)
+          case Success(tail) =>
+            BasicConcepts.run(p)(tail)
+        }
+      }
+
+      Parser(p.c, innerFnc)
+    }
+
+    override def >>(p: Parser): Parser = this.andThen(p)
 
     override def orElse(p: Parser): Try[String] = ???
 
