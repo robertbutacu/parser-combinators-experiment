@@ -12,6 +12,7 @@ trait ParserComposer {
   def choice: Try[String]
   def anyOf: Try[String]
   def run(input: String): Try[String]
+  def <|>(p: Parser): Parser
 }
 
 object ParserComposer {
@@ -50,5 +51,7 @@ object ParserComposer {
     override def anyOf: Try[String] = ???
 
     override def run(input: String): Try[String] = parser.s(input)
+
+    override def <|>(p: Parser): Parser = this.orElse(p)
   }
 }
