@@ -1,6 +1,7 @@
 package courses.first
 
 import data.{Parser, Result}
+import data.operations.ParserComposer.ImplicitParserComposer
 
 import scala.util.{Failure, Success, Try}
 
@@ -63,6 +64,13 @@ object BasicConcepts {
     }
 
     Parser(c, innerFunction)
+  }
+
+  def choice(parsers: List[Parser]): Parser =
+    parsers.reduce(_ <|> _)
+
+  def anyOf(characters: String): Parser = {
+    choice(characters.map(c => buildParser(c)).toList)
   }
 
   def run(p: Parser)(input: String) = p.s(input)
