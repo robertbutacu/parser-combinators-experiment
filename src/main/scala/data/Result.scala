@@ -1,3 +1,3 @@
 package data
 
-case class Result[A, B](c: A, remaining: B)
+case class Result[A, B](value: A, remaining: B)

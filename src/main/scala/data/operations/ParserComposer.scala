@@ -1,19 +1,19 @@
 package data.operations
 
-import courses.first.BasicConcepts
 import data.{Parser, Result}
 
 import scala.util.{Failure, Success, Try}
 
 trait ParserComposer[A, B] {
   def andThen(p: Parser[A, B]): Parser[A, B]
-  def >>(p: Parser[A, B]): Parser[A, B]
+  def >>(p: Parser[A, B]): Parser[A, B] // andThen sugar
   def orElse(p: Parser[A, B]): Parser[A, B]
   def choice: Try[Result[A, B]]
   def anyOf: Try[Result[A, B]]
   def run(input: B): Try[Result[A, B]]
-  def <|>(p: Parser[A, B]): Parser[A, B]
-  def map(f: A => A): Parser[A, B]
+  def <|>(p: Parser[A, B]): Parser[A, B] // orElse sugar
+  def map[C](f: A => C): Parser[C, B]
+  def <!>[C](f: A => C): Parser[C, B] // map sugar
 }
 
 object ParserComposer {
@@ -51,12 +51,14 @@ object ParserComposer {
 
     override def <|>(p: Parser[A, B]): Parser[A, B] = this.orElse(p)
 
-    override def map(f: A => A): Parser[A, B] = {
-      def mapOverParser(input: B): Try[Result[A, B]] = {
-        parser.run(input).map(r => r.copy(c = f(r.c)))
+    override def map[C](f: A => C): Parser[C, B] = {
+      def mapOverParser(input: B): Try[Result[C, B]] = {
+        parser.run(input).map(r => r.copy(value = f(r.value)))
       }
 
-      Parser(parser.c, mapOverParser)
+      Parser(f(parser.c), mapOverParser)
     }
+
+    override def <!>[C](f: A => C): Parser[C, B] = this.map(f)
   }
 }
