@@ -48,11 +48,11 @@ object BasicConcepts {
     }
   }
 
-  def wrapWithParser(c: Char)(func: String => Try[Result]): Parser =
+  def wrapWithParser(c: Char)(func: String => Try[Result[Char, String]]): Parser[Char, String] =
     Parser(c, func)
 
-  def buildParser(c: Char): Parser = {
-    def innerFunction(s: String): Try[Result] = {
+  def buildParser(c: Char): Parser[Char, String] = {
+    def innerFunction(s: String): Try[Result[Char, String]] = {
       if (s.isEmpty)
         Success(Result("".toCharArray.head, "Parsed it all"))
       else {
@@ -66,12 +66,12 @@ object BasicConcepts {
     Parser(c, innerFunction)
   }
 
-  def choice(parsers: List[Parser]): Parser =
+  def choice[A, B](parsers: List[Parser[A, B]]): Parser[A, B] =
     parsers.reduce(_ <|> _)
 
-  def anyOf(characters: String): Parser = {
+  def anyOf(characters: String): Parser[Char, String] = {
     choice(characters.map(c => buildParser(c)).toList)
   }
 
-  def run(p: Parser)(input: String) = p.s(input)
+  def run(p: Parser[Char, String])(input: String) = p.s(input)
 }

@@ -15,11 +15,11 @@ class ParserComposerTest extends FlatSpec {
   lazy val customLetter = 'A'
 
 
-  lazy val AParser: Parser = BasicConcepts.buildParser('A')
-  lazy val BParser: Parser = BasicConcepts.buildParser('B')
+  lazy val AParser: Parser[Char, String] = BasicConcepts.buildParser('A')
+  lazy val BParser: Parser[Char, String] = BasicConcepts.buildParser('B')
 
-  lazy val aAndBParser: Parser = AParser >> BParser
-  lazy val aOrElseBParser: Parser = AParser orElse BParser
+  lazy val aAndBParser: Parser[Char, String]    = AParser >> BParser
+  lazy val aOrElseBParser: Parser[Char, String] = AParser orElse BParser
 
   "Given a good string" should "parse 2 letter with andThen" in {
     assert(aAndBParser.run(goodString) match {

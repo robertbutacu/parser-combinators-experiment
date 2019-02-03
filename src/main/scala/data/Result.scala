@@ -1,3 +1,3 @@
 package data
 
-case class Result(c: Char, remaining: String)
+case class Result[A, B](c: A, remaining: B)

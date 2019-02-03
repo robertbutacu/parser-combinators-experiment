@@ -10,8 +10,8 @@ class BasicConceptsTests extends FlatSpec {
   lazy val badString = "ZBC"
   lazy val customLetter = 'A'
   lazy val aParser: String => Try[String] = BasicConcepts.parseChar2('A')
-  lazy val dataStructureParser: Parser = BasicConcepts.buildParser('A')
-  lazy val parserExecutor: String => Try[Result] = BasicConcepts.run(dataStructureParser)
+  lazy val dataStructureParser: Parser[Char, String] = BasicConcepts.buildParser('A')
+  lazy val parserExecutor: String => Try[Result[Char, String]] = BasicConcepts.run(dataStructureParser)
 
   def injectCharIntoPositiveMessage(c: Char): String =
     s"""Found $c"""
