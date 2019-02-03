@@ -21,11 +21,7 @@ object ParserComposer {
       def innerFnc(input: String): Try[Result] = {
         val result1 = parser.run(input)
 
-        result1 match {
-          case Failure(ex) => Failure(ex)
-          case Success(tail) =>
-            p.run(tail.remaining)
-        }
+        result1.flatMap(r => p.run(r.remaining))
       }
 
       Parser(p.c, innerFnc)
