@@ -74,4 +74,10 @@ object BasicConcepts {
   }
 
   def run(p: Parser[Char, String])(input: String) = p.func(input)
+
+  def threeDigitParser: Parser[Char, String] = {
+    val anyDigit = anyOf("0123456789")
+
+    anyDigit >> anyDigit >> anyDigit
+  }
 }

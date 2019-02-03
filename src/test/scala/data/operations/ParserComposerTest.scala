@@ -14,7 +14,6 @@ class ParserComposerTest extends FlatSpec {
   lazy val badString2 = "AZC"
   lazy val customLetter = 'A'
 
-
   lazy val AParser: Parser[Char, String] = BasicConcepts.buildParser('A')
   lazy val BParser: Parser[Char, String] = BasicConcepts.buildParser('B')
 
@@ -23,7 +22,7 @@ class ParserComposerTest extends FlatSpec {
 
   "Given a list of random chars" should "parse any of them " in {
     assert(AParser.anyOf(List('A', 'B', 'C', 'D', 'F')).run("AAABBBCDFFF") match {
-      case Success(_) => true
+      case Success(r) => println(r); true
       case _          => false
     })
   }

@@ -2,7 +2,7 @@ package courses.first
 
 import data.{Parser, Result}
 import org.scalatest.FlatSpec
-
+import data.operations.ParserComposer.ImplicitParserComposer
 import scala.util.{Failure, Success, Try}
 
 class BasicConceptsTests extends FlatSpec {
@@ -19,6 +19,9 @@ class BasicConceptsTests extends FlatSpec {
   def injectCharIntoNegativeMessage(expected: Char, got: Char): String =
     s"""Expected $expected, found $got"""
 
+  "Three digits parser" should "parse three digits" in {
+    assert(BasicConcepts.threeDigitParser.run("123B") === Success(Result(3, "B")))
+  }
   "Give a string starting with A " should " parse the string" in {
     assert(BasicConcepts.AParser(goodString) === (true, "BC"))
   }
