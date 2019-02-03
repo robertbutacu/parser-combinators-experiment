@@ -21,6 +21,13 @@ class ParserComposerTest extends FlatSpec {
   lazy val aAndBParser: Parser[Char, String]    = AParser >> BParser
   lazy val aOrElseBParser: Parser[Char, String] = AParser orElse BParser
 
+  "Given a list of random chars" should "parse any of them " in {
+    assert(AParser.anyOf(List('A', 'B', 'C', 'D', 'F')).run("AAABBBCDFFF") match {
+      case Success(_) => true
+      case _          => false
+    })
+  }
+
   "Given a good string" should "parse 2 letter with andThen" in {
     assert(aAndBParser.run(goodString) match {
       case Success(_) => true

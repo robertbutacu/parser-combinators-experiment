@@ -10,11 +10,11 @@ trait ParserComposer[A, B] {
   def >>(p: Parser[A, B]): Parser[A, B] // andThen sugar
   def orElse(p: Parser[A, B]): Parser[A, B]
   def choice(otherParsers: List[Parser[A, B]]): Parser[A, B]
-  def anyOf(ls: List[A], f: B => Try[Result[A, B]]): Parser[A, B]
+  def anyOf(ls: List[A]): Parser[A, B]
   def run(input: B): Try[Result[A, B]]
   def <|>(p: Parser[A, B]): Parser[A, B] // orElse sugar
   def map[C](f: A => C): Parser[C, B]
-  def <!>[C](f: A => C): Parser[C, B] // map sugar
+  def <%>[C](f: A => C): Parser[C, B] // map sugar
 }
 
 object ParserComposer {
@@ -26,7 +26,7 @@ object ParserComposer {
         result1.flatMap(r => p.run(r.remaining))
       }
 
-      Parser(p.c, innerFnc)
+      Parser(p.input, innerFnc)
     }
 
     override def >>(p: Parser[A, B]): Parser[A, B]     = this.andThen(p)
@@ -41,14 +41,14 @@ object ParserComposer {
         }
       }
 
-      Parser(p.c, innerFnc)
+      Parser(p.input, innerFnc)
     }
 
     override def choice(otherParsers: List[Parser[A, B]]): Parser[A, B]      = (otherParsers :+ parser).reduce(_ <|> _)
 
-    override def anyOf(ls: List[A], f: B => Try[Result[A, B]]): Parser[A, B] = ls.map(a => Parser(a, f)).reduce(_ <|> _)
+    override def anyOf(ls: List[A]): Parser[A, B] = ls.map(a => Parser(a, parser.func)).reduce(_ <|> _)
 
-    override def run(input: B): Try[Result[A, B]]   = parser.s(input)
+    override def run(input: B): Try[Result[A, B]]   = parser.func(input)
 
     override def <|>(p: Parser[A, B]): Parser[A, B] = this.orElse(p)
 
@@ -57,9 +57,9 @@ object ParserComposer {
         parser.run(input).map(r => r.copy(value = f(r.value)))
       }
 
-      Parser(f(parser.c), mapOverParser)
+      Parser(f(parser.input), mapOverParser)
     }
 
-    override def <!>[C](f: A => C): Parser[C, B] = this.map(f)
+    override def <%>[C](f: A => C): Parser[C, B] = this.map(f)
   }
 }

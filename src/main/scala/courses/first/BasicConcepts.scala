@@ -73,5 +73,5 @@ object BasicConcepts {
     choice(characters.map(c => buildParser(c)).toList)
   }
 
-  def run(p: Parser[Char, String])(input: String) = p.s(input)
+  def run(p: Parser[Char, String])(input: String) = p.func(input)
 }
